@@ -2284,6 +2284,7 @@ bool ConfigCtl::validNiSaveBits( QString &err, DAQ::Params &q ) const
 
 bool ConfigCtl::validSyncTab( QString &err, DAQ::Params &q ) const
 {
+  qDebug() << "validsynctab" << q.sync.sourceIdx << DAQ::eSyncSourceNI;
     if( q.sync.sourceIdx == DAQ::eSyncSourceNI ) {
 
 #ifndef HAVE_NIDAQmx
@@ -2300,6 +2301,9 @@ bool ConfigCtl::validSyncTab( QString &err, DAQ::Params &q ) const
         }
     }
 
+    if (q.sync.sourceIdx == DAQ::eSyncSourceNone)
+      return true;
+    
     if( usingIM ) {
 
         if( // source is PXI
