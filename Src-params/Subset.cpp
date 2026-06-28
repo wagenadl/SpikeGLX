@@ -425,8 +425,8 @@ void Subset::subsetBlock(
     if( &dst != &src )
         dst.resize( ntpts * nk );
 
-    qint16  *D = &dst[0],
-            *S = &src[c0];
+    qint16  *D = ntpts ? &dst[0] : 0,
+            *S = ntpts ? &src[c0] : 0;
 
     for( int it = 0; it < ntpts; ++it, D += nk, S += nchans )
         memcpy( D, S, ncpy );
