@@ -61,3 +61,7 @@ desktop.ini
 *.bin
 
 
+build
+.qmake.stash
+compile_commands.json
+

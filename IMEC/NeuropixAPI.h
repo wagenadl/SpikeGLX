@@ -14,9 +14,16 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <ctime>
 
+#ifdef __linux__
+#define NP_EXPORT
+#define NP_CALLBACK
+#define __stdcall
+#else
 #define NP_EXPORT __declspec(dllexport)
 #define NP_CALLBACK __stdcall
+#endif
 
 /**
  * @brief Main Neuropixels API namespace. All external functions are included in this namespace.

@@ -10,9 +10,11 @@
 # DEFINES += DO_TRACE
 
 # Select real or simulated {IM,NI}:
+win32 {
 DEFINES += HAVE_IMEC
 DEFINES += HAVE_VISA
 DEFINES += HAVE_NIDAQmx
+}
 
 TEMPLATE = app
 
@@ -34,7 +36,7 @@ CONFIG(debug, debug|release) {
     }
 
     unix {
-        DESTDIR = /home/jic/target/debug64
+        DESTDIR = ./build/dbg
     }
 }
 else {
@@ -52,9 +54,14 @@ else {
     }
 
     unix {
-        DESTDIR = /home/jic/target/release64
+        DESTDIR = ./build
     }
 }
+
+OBJECTS_DIR = $${DESTDIR}/build
+MOC_DIR = $${DESTDIR}/build
+UI_DIR = $${DESTDIR}/build
+RCC_DIR = $${DESTDIR}/build
 
 DEPENDPATH  += $$PWD
 INCLUDEPATH += $$PWD
@@ -76,9 +83,10 @@ SRC_SGLX = \
     Src-run \
     Src-shank \
     Src-triggers \
-    Src-verify
+    Src-verify \
+    DAW
 for(dir, SRC_SGLX) {
-    INCLUDEPATH += $$PWD/$$dir
+    INCLUDEPATH += $$PWD/$$dir	
     include($$dir/$$dir".pri")
 }
 
