@@ -38,7 +38,17 @@ private:
     Config_gatetab          *gateTab;
     Config_trigtab          *trigTab;
     Config_snstab           *snsTab;
-
+  enum Tabs {
+    Tab_Device=0,
+    Tab_IM=1,
+    Tab_OBX=2,
+    Tab_NI=3,
+    Tab_Sync=4,
+    Tab_Gate=5,
+    Tab_Trig=6,
+    Tab_SNS=7,
+    Tab_END=8,
+  };
 public:
     CimCfg::ImProbeTable    prbTab; // THE TABLE, filled in by detect()
     DAQ::Params             acceptedParams;

@@ -616,17 +616,17 @@ void ConfigCtl::setSelectiveAccess( bool availIM, bool availNI )
 
     if( usingIM ) {
         imTab->toGUI( acceptedParams );
-        cfgUI->tabsW->setTabEnabled( 1, true );
+        cfgUI->tabsW->setTabEnabled( Tab_IM, true );
     }
 
     if( usingOB ) {
         obxTab->toGUI();
-        cfgUI->tabsW->setTabEnabled( 2, true );
+        cfgUI->tabsW->setTabEnabled( Tab_OBX, true );
     }
 
     if( usingNI ) {
         niTab->toGUI( acceptedParams );
-        cfgUI->tabsW->setTabEnabled( 3, true );
+        cfgUI->tabsW->setTabEnabled( Tab_NI, true );
     }
 
     if( availIM || availNI ) {
@@ -634,10 +634,10 @@ void ConfigCtl::setSelectiveAccess( bool availIM, bool availNI )
         gateTab->toGUI( acceptedParams );
         trigTab->toGUI( acceptedParams );
         snsTab->toGUI( acceptedParams );
-        cfgUI->tabsW->setTabEnabled( 4, true );
-        cfgUI->tabsW->setTabEnabled( 5, true );
-        cfgUI->tabsW->setTabEnabled( 6, true );
-        cfgUI->tabsW->setTabEnabled( 7, true );
+        cfgUI->tabsW->setTabEnabled( Tab_Sync, true );
+        cfgUI->tabsW->setTabEnabled( Tab_Gate, true );
+        cfgUI->tabsW->setTabEnabled( Tab_Trig, true );
+        cfgUI->tabsW->setTabEnabled( Tab_SNS, true );
     }
 }
 
@@ -1380,7 +1380,7 @@ void ConfigCtl::setNoDialogAccess( bool clearNi )
 
 // Can't tab
 
-    for( int i = 1, n = cfgUI->tabsW->count(); i < n; ++i )
+    for( int i = Tab_IM; i < Tab_END; ++i )
         cfgUI->tabsW->setTabEnabled( i, false );
 
 // Can't verify or ok
