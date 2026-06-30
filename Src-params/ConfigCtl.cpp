@@ -11,6 +11,7 @@
 #include "ColorTTLCtl.h"
 #include "Subset.h"
 #include "SignalBlocker.h"
+#include "DAW/SalpaConfigTab.h"
 
 #ifdef HAVE_IMEC
 #include "IMEC/NeuropixAPI.h"
@@ -47,6 +48,7 @@ ConfigCtl::ConfigCtl( QObject *parent )
         gateTab(0),
         trigTab(0),
         snsTab(0),
+        salpaTab(0),
         usingIM(false), usingOB(false),
         usingNI(false), validated(false)
 {
@@ -91,6 +93,7 @@ ConfigCtl::ConfigCtl( QObject *parent )
     gateTab = new Config_gatetab( cfgUI->gateTab );
     trigTab = new Config_trigtab( cfgUI->trigTab );
     snsTab  = new Config_snstab( cfgUI->snsTab );
+    salpaTab  = new SalpaConfigTab( cfgUI->salpaTab );
 
     cfgUI->tabsW->setCurrentIndex( 0 );
 }
@@ -98,6 +101,11 @@ ConfigCtl::ConfigCtl( QObject *parent )
 
 ConfigCtl::~ConfigCtl()
 {
+  if (salpaTab) {
+    delete salpaTab;
+    salpaTab = 0;
+  }
+  
     if( snsTab ) {
         delete snsTab;
         snsTab = 0;
@@ -639,6 +647,9 @@ void ConfigCtl::setSelectiveAccess( bool availIM, bool availNI )
         cfgUI->tabsW->setTabEnabled( Tab_Trig, true );
         cfgUI->tabsW->setTabEnabled( Tab_SNS, true );
     }
+
+    cfgUI->tabsW->setTabEnabled(Tab_Salpa, usingIM);
+    salpaTab->toGUI(acceptedParams, usingIM, usingNI);
 }
 
 
@@ -1298,16 +1309,17 @@ void ConfigCtl::tabChanged( int tab )
     QString s;
 
     switch( tab ) {
-        case 0: s = "Devices Help"; break;
-        case 1: s = "IM Help"; break;
-        case 2: s = "Obx Help"; break;
-        case 3: s = "NI Help"; break;
-        case 4: s = "Sync Help"; break;
-        case 5: s = "Gates Help"; break;
-        case 6: s = "Trigs Help"; break;
-        case 7: s = "Save Help"; break;
+        case Tab_Device: s = "Devices Help"; break;
+        case Tab_IM:     s = "IM Help"; break;
+        case Tab_OBX:    s = "Obx Help"; break;
+        case Tab_NI:     s = "NI Help"; break;
+        case Tab_Sync:   s = "Sync Help"; break;
+        case Tab_Gate:   s = "Gates Help"; break;
+        case Tab_Trig:   s = "Trigs Help"; break;
+        case Tab_SNS:    s = "Save Help"; break;
+        case Tab_Salpa:  s = "Salpa Help"; break;
+        case Tab_END:    s = ""; break;
     }
-
     cfgUI->helpBut->setText( s );
 }
 
@@ -1317,16 +1329,17 @@ void ConfigCtl::helpBut()
     QString s;
 
     switch( cfgUI->tabsW->currentIndex() ) {
-        case 0: s = "DevTab_Help"; break;
-        case 1: s = "IMTab_Help"; break;
-        case 2: s = "OBXTab_Help"; break;
-        case 3: s = "NITab_Help"; break;
-        case 4: s = "SyncTab_Help"; break;
-        case 5: s = "GateTab_Help"; break;
-        case 6: s = "TrigTab_Help"; break;
-        case 7: s = "SaveTab_Help"; break;
-    }
-
+        case Tab_Device: s = "DevTab_Help"; break;
+        case Tab_IM:     s = "IMTab_Help"; break;
+        case Tab_OBX:    s = "OBXTab_Help"; break;
+        case Tab_NI:     s = "NITab_Help"; break;
+        case Tab_Sync:   s = "SyncTab_Help"; break;
+        case Tab_Gate:   s = "GateTab_Help"; break;
+        case Tab_Trig:   s = "TrigTab_Help"; break;
+        case Tab_SNS:    s = "SaveTab_Help"; break;
+        case Tab_Salpa:  s = "SalpaTab_Help"; break;
+    };
+             Tab_END:    
     showHelp( s );
 }
 

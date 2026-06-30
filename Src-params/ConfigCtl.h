@@ -38,6 +38,7 @@ private:
     Config_gatetab          *gateTab;
     Config_trigtab          *trigTab;
     Config_snstab           *snsTab;
+    class SalpaConfigTab    *salpaTab;
   enum Tabs {
     Tab_Device=0,
     Tab_IM=1,
@@ -47,7 +48,8 @@ private:
     Tab_Gate=5,
     Tab_Trig=6,
     Tab_SNS=7,
-    Tab_END=8,
+    Tab_Salpa=8,
+    Tab_END=9,
   };
 public:
     CimCfg::ImProbeTable    prbTab; // THE TABLE, filled in by detect()
