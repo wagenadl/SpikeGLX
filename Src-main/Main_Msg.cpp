@@ -118,6 +118,10 @@ void Main_Msg::sysTrayMsg(
     int             timeout_msec,
     bool            isError )
 {
+    if (!isError)
+      if (timeout_msec > 4000 || timeout_msec <= 0)
+        timeout_msec = 4000;
+  
     if( sysTray ) {
 
         sysTray->showMessage(
