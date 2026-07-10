@@ -3,6 +3,7 @@
 
 #include "CimCfg.h"
 #include "CniCfg.h"
+#include "DAW/SalpaParams.h"
 
 /* ---------------------------------------------------------------- */
 /* Types ---------------------------------------------------------- */
@@ -134,6 +135,7 @@ struct Params {
     TrgSpikeParams  trgSpike;
     ModeParams      mode;
     SeeNSave        sns;
+    SalpaParams     salpa;
 
     static inline bool stream_isNI( const QString &stream )
         {return stream.startsWith( "n" );}

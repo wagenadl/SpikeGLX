@@ -7,6 +7,7 @@
 #include <QWidget>
 
 #include "Src-params/DAQ.h"
+#include "SalpaParams.h"
 
 class SalpaConfigTab: public QObject {
   Q_OBJECT;
@@ -14,6 +15,7 @@ public:
   SalpaConfigTab(QWidget *tab);
   virtual ~SalpaConfigTab();
   void toGUI(DAQ::Params const &pp, bool usingIM, bool usingNI);
+  SalpaParams params() const;
 private slots:
   void autoEnable();
   void deviceChange();

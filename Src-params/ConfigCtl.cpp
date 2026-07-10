@@ -1338,8 +1338,8 @@ void ConfigCtl::helpBut()
         case Tab_Trig:   s = "TrigTab_Help"; break;
         case Tab_SNS:    s = "SaveTab_Help"; break;
         case Tab_Salpa:  s = "SalpaTab_Help"; break;
+    case Tab_END: break;
     };
-             Tab_END:    
     showHelp( s );
 }
 
@@ -1355,6 +1355,7 @@ void ConfigCtl::reset()
     imTab->reset( acceptedParams );
     setNoDialogAccess();
     syncTab->resetCalRunMode();
+    salpaTab->toGUI(acceptedParams, usingIM, usingNI);
 }
 
 
@@ -1453,6 +1454,7 @@ void ConfigCtl::paramsFromDialog(
     gateTab->fromGUI( q );
     trigTab->fromGUI( q );
     snsTab->fromGUI( q );
+    q.salpa = salpaTab->params();
 }
 
 
