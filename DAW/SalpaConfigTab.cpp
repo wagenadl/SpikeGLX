@@ -55,6 +55,7 @@ void SalpaConfigTab::toGUI(DAQ::Params const &pp,
 
   autoEnable();
 
+  // TODO: this doesn't update on “Devices:Detect”
   ui->device->clear();
   if (!pp.ni.dev1.isEmpty())
     ui->device->addItem(pp.ni.dev1, QVariant(1));
