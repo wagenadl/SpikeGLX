@@ -794,3 +794,15 @@ void SVGrafsM::update_ic2iy( int first )
 }
 
 
+// DAW[
+
+void SVGrafsM::clearSweeps() {
+  const int nC = chanCount();
+  for (int ic = 0; ic < nC; ic++) {
+    ic2Y[ic].yval.erase();
+    ic2Y[ic].yval2.erase();
+  }
+  //  theM->updateNow();
+}
+
+// ]DAW

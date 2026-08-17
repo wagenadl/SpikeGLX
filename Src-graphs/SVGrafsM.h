@@ -113,6 +113,9 @@ protected:
     bool                    externUpdateTimes,
                             inConstructor,
                             is_gw;
+  bool sweepOnTrigger = false;
+  int sweepTriggerSource = -1;
+  bool sweepTriggered = false;
 
 public:
     SVGrafsM(
@@ -174,6 +177,7 @@ public slots:
     void binMaxChkClicked( bool checked );
     virtual void bandSelChanged( int /*sel*/ )  {}
     virtual void sAveSelChanged( int /*sel*/ )  {}
+    virtual void setSweepTriggering(int /*idx*/) {}
     // Right-click
     void refresh();
     void colorTTL();
@@ -219,6 +223,11 @@ private:
     void pageChange( int first, bool internUpdateTimes = true );
     void setGraphTimeSecs();
     void update_ic2iy( int first );
+
+
+protected:
+  void clearSweeps();
+  
 };
 
 #endif  // SVGRAFSM_H

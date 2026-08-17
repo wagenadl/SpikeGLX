@@ -192,6 +192,8 @@ void SVToolsMX::init()
                 LVBUT_STYLE, LVLBL_STYLE, LVVAL_STYLE,
                 LVB, this );
         addWidget( LV );
+
+        // DAW-TODO: Add Salpa config here
     }
 
 // -------------
@@ -230,6 +232,30 @@ void SVToolsMX::init()
             LVBUT_STYLE, LVLBL_STYLE, LVVAL_STYLE,
             LVC, this );
     addWidget( LV );
+
+    // DAW-TODO: Add sweep triggering here
+    // -------------
+    // Sweep trigger
+    // -------------
+    LVB = new LVE_cb("Sweep triggering\n"
+                     " - Off\t= continuous display\n"
+                     " - On\t= trigger on IMEC digital input\n"
+                     " - D0..Dx\t= trigger on NI digital input",
+                     this);
+    LVB->m_comboBox->addItem("Off");
+    if (gr->isImec()) {
+      LVB->m_comboBox->addItem("On");
+    } else {
+      for (int i=0; i<16; i++) 
+        LVB->m_comboBox->addItem(QString("D%1").arg(i));
+      // DAW-TODO: proper range
+    }
+    connect(LVB->m_comboBox, &QComboBox::currentIndexChanged,
+            gr, &SVGrafsM::setSweepTriggering, Qt::QueuedConnection);
+    LV = new LVBut("ST", LVB->m_comboBox->currentText(),
+                   LVBUT_STYLE, LVLBL_STYLE, LVVAL_STYLE,
+                   LVB, this);
+    addWidget(LV);
 }
 
 

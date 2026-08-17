@@ -45,7 +45,7 @@ public:
 public slots:
     virtual void bandSelChanged( int sel );
     virtual void sAveSelChanged( int sel );
-
+    virtual void setSweepTriggering(int idx) override;
 private slots:
     virtual void myClickGraph( double x, double y, int iy );
     virtual void myRClickGraph( double x, double y, int iy );

@@ -460,7 +460,7 @@ static void genNPts(
         }
 
         for( int c = nNeu; c < nCH; ++c )
-            dst[c + s*nCH] = 0;
+          dst[c + s*nCH] = (fmod(cumSamp + s, sampPerT) < 1000) ? 0x0001 : 0;
     }
 }
 

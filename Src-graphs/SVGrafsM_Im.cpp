@@ -238,6 +238,53 @@ void SVGrafsM_Im::putSamps( vec_i16 &data, quint64 headCt )
             ;
     }
 
+
+    // -----------------------
+    // Handle sweep triggering
+    // -----------------------
+    qint16 *data_ = &data[0];
+    if (sweepOnTrigger) {
+      if (!sweepTriggered) {
+        // let's see if we have a trigger
+        int ttrig = -1;
+        if (nNu < nC) {
+          qint16 *digital = data_ + nNu;
+          for (int t=0; t<ntpts; t++) {
+            if (*digital) {
+              ttrig = t;
+              break;
+            }
+            digital += nC;
+          }
+        }
+        if (ttrig >=0) {
+          clearSweeps();
+          sweepTriggered = true;
+          data_ += nC * ttrig;
+          ntpts -= ttrig;
+        }
+      }
+      if (sweepTriggered) {
+        theX->dataMtx.lock();
+        for (int ic = 0; ic < nC; ic++) {
+          if (ic2iy[ic] < 0)
+            continue;
+          int npix = ic2Y[ic].yval.capacity();
+          int usedpix = ic2Y[ic].yval.size();
+          int availsams = (npix - usedpix) * dwnSmp;
+          if (ntpts >= availsams) {
+            ntpts = availsams;
+            sweepTriggered = false; // this is last piece of data for now
+          }
+          break;
+        }
+        theX->dataMtx.unlock();
+      } else {
+        drawMtx.unlock();
+        return;
+      }
+    }
+
 // ---------------------
 // Append data to graphs
 // ---------------------
@@ -270,7 +317,7 @@ void SVGrafsM_Im::putSamps( vec_i16 &data, quint64 headCt )
         // By channel type...
         // ------------------
 
-        qint16  *d  = &data[ic];
+        qint16  *d  = &data_[ic];
         int     ny  = 0;
 
         if( ic < nAP ) {
@@ -1069,3 +1116,16 @@ bool SVGrafsM_Im::chanMapDialog( QString &cmFile )
 }
 
 
+// DAW[
+
+void SVGrafsM_Im::setSweepTriggering(int idx) {
+  if (idx) {
+    sweepOnTrigger = true;
+    sweepTriggered = false;
+    clearSweeps();
+  } else {
+    sweepOnTrigger = false;
+  }
+}
+
+// ]DAW

@@ -70,7 +70,7 @@ else
         }
 
         for( int c = nAna; c < n16; ++c )
-            dst[c + s*n16] = 0;
+            dst[c + s*n16] = (fmod(cumSamp + s, sampPerT) < 1000) ? 0x1111 : 0;
     }
 }
 
