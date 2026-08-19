@@ -7,85 +7,78 @@
 SalpaConfigTab::SalpaConfigTab(QWidget *tab): QObject(0) {
   ui = new Ui_SalpaConfigTab();
   ui->setupUi(tab);
-  usingIM = false;
-  usingNI = false;
   autoEnable();
   connect(ui->enable, &QCheckBox::toggled,
           this, &SalpaConfigTab::autoEnable);
-  connect(ui->digitaltrigger, &QGroupBox::toggled,
+  connect(ui->digitaltrigger, &QCheckBox::toggled,
           this, &SalpaConfigTab::autoEnable);
-  connect(ui->autodetect, &QGroupBox::toggled,
+  connect(ui->autodetect, &QCheckBox::toggled,
           this, &SalpaConfigTab::autoEnable);
-  connect(ui->device, &QComboBox::currentIndexChanged,
-          this, &SalpaConfigTab::deviceChange);
+
+  connect(ui->detectthresholdmode, &QComboBox::currentIndexChanged,
+          this, &SalpaConfigTab::configDetectThreshold);
+  connect(ui->recoverythresholdmode, &QComboBox::currentIndexChanged,
+          this, &SalpaConfigTab::configRecoveryThreshold);
+
+  // externally report changes
+  connect(ui->enable, &QCheckBox::toggled,
+          this, &SalpaConfigTab::changed);
+  connect(ui->digitaltrigger, &QCheckBox::toggled,
+          this, &SalpaConfigTab::changed);
+  connect(ui->autodetect, &QCheckBox::toggled,
+          this, &SalpaConfigTab::changed);
+  connect(ui->window, &QDoubleSpinBox::valueChanged,
+          this, &SalpaConfigTab::changed);
+  connect(ui->detectthreshold, &QDoubleSpinBox::valueChanged,
+          this, &SalpaConfigTab::changed);
+  connect(ui->detectthresholdmode, &QComboBox::currentIndexChanged,
+          this, &SalpaConfigTab::changed);
+  connect(ui->lookahead, &QDoubleSpinBox::valueChanged,
+          this, &SalpaConfigTab::changed);
+  connect(ui->recoverythreshold, &QDoubleSpinBox::valueChanged,
+          this, &SalpaConfigTab::changed);
+  connect(ui->recoverythresholdmode, &QComboBox::currentIndexChanged,
+          this, &SalpaConfigTab::changed);
+  connect(ui->estimator, &QDoubleSpinBox::valueChanged,
+          this, &SalpaConfigTab::changed);
+  connect(ui->blank, &QDoubleSpinBox::valueChanged,
+          this, &SalpaConfigTab::changed);
+  connect(ui->detectzerocrossing, &QCheckBox::toggled,
+          this, &SalpaConfigTab::changed);
+  
 }
 
 SalpaConfigTab::~SalpaConfigTab() {
 }
 
-void SalpaConfigTab::deviceChange() {
-  qDebug() <<"salpaconfig: devicechange";
-  ui->line->clear();
-  for (QString const &line: linesbydev[ui->device->currentText()])
-    ui->line->addItem(line);
-}
-
 void SalpaConfigTab::autoEnable() {
-  qDebug() << "salpaconfig: autoenable";
-  ui->enable->setEnabled(usingIM);
-
-  bool enabled = usingIM && ui->enable->isChecked();
-  ui->general->setEnabled(enabled);
-  ui->recovery->setEnabled(enabled);
-  ui->autodetect->setEnabled(enabled);
-  ui->digitaltrigger->setEnabled(enabled && usingNI);
+  // bool enabled = ui->enable->isChecked();
+  // ui->general->setEnabled(enabled);
+  // ui->recovery->setEnabled(enabled);
+  // ui->autodetect->setEnabled(enabled);
+  // ui->autodetectbox->setEnabled(enabled && ui->autodetect->isChecked());
+  // ui->digitaltrigger->setEnabled(enabled);
 }
     
 
-void SalpaConfigTab::toGUI(DAQ::Params const &pp,
-                           bool usingIM1, bool usingNI1) {
-  usingIM = usingIM1;
-  usingNI = usingNI1;
-  linesbydev.clear();
-  for (QString const &devline: pp.ni.getAllDOLines()) {
-    QStringList bits = devline.split("/");
-    QString dev = bits.takeFirst();
-    linesbydev[dev] << bits.join("/");
-  }
-
-  // TODO: this doesn't update on “Devices:Detect”
-  ui->device->clear();
-  if (!pp.ni.dev1.isEmpty())
-    ui->device->addItem(pp.ni.dev1, QVariant(1));
-  if (!pp.ni.dev2.isEmpty() && pp.ni.dev2 != pp.ni.dev1)
-    ui->device->addItem(pp.ni.dev2, QVariant(1));
-
-  ui->enable->setChecked(pp.salpa.enable);
-  ui->window->setValue(pp.salpa.window_ms);
-  ui->autodetect->setChecked(pp.salpa.autodetect);
-  ui->detectthreshold->setValue(pp.salpa.detect_threshold);
+void SalpaConfigTab::toGUI(SalpaParams const &ppsalpa) {
+  ui->enable->setChecked(ppsalpa.enable);
+  ui->window->setValue(ppsalpa.window_ms);
+  ui->autodetect->setChecked(ppsalpa.autodetect);
+  ui->detectthreshold->setValue(ppsalpa.detect_threshold);
   ui->detectthresholdmode->setCurrentIndex(
-           pp.salpa.detect_scaling == SalpaParams::Scaling::PercentRange ? 0
-           : pp.salpa.detect_scaling == SalpaParams::Scaling::RMS ? 1
+           ppsalpa.detect_scaling == SalpaParams::Scaling::PercentRange ? 0
+           : ppsalpa.detect_scaling == SalpaParams::Scaling::RMS ? 1
            : 2);
-  ui->lookahead->setValue(pp.salpa.lookahead_ms);
-  ui->digitaltrigger->setChecked(pp.salpa.digitaltrigger);
-  for (int k = 0; k < ui->device->count(); k++)
-    if (ui->device->itemText(k) == pp.salpa.trigger_device)
-      ui->device->setCurrentIndex(k);
-
-  deviceChange();
-
-  for (int k = 0; k < ui->line->count(); k++)
-    if (ui->line->itemText(k) == pp.salpa.trigger_line)
-      ui->line->setCurrentIndex(k);
-  ui->recoverythreshold->setValue(pp.salpa.recovery_threshold);
+  ui->lookahead->setValue(ppsalpa.lookahead_ms);
+  ui->digitaltrigger->setChecked(ppsalpa.digitaltrigger);
+  ui->recoverythreshold->setValue(ppsalpa.recovery_threshold);
   ui->recoverythresholdmode->setCurrentIndex(
-           pp.salpa.recovery_scaling == SalpaParams::Scaling::RMS ? 0
+           ppsalpa.recovery_scaling == SalpaParams::Scaling::RMS ? 0
            : 1);
-  ui->estimator->setValue(pp.salpa.recovery_window_ms);  
-  ui->blank->setValue(pp.salpa.recovery_blank_ms);  
-  ui->detectzerocrossing->setChecked(pp.salpa.recovery_zero_crossing);  
+  ui->estimator->setValue(ppsalpa.recovery_window_ms);  
+  ui->blank->setValue(ppsalpa.recovery_blank_ms);  
+  ui->detectzerocrossing->setChecked(ppsalpa.recovery_zero_crossing);  
 
   autoEnable();
 }
@@ -102,8 +95,6 @@ SalpaParams SalpaConfigTab::params() const {
     : SalpaParams::Scaling::Absolute;
   pp.lookahead_ms = ui->lookahead->value();
   pp.digitaltrigger = ui->digitaltrigger->isChecked();
-  pp.trigger_device = ui->device->currentText();
-  pp.trigger_line = ui->line->currentText();
   pp.recovery_threshold = ui->recoverythreshold->value();
   idx = ui->recoverythresholdmode->currentIndex();
   pp.recovery_scaling = idx == 0 ? SalpaParams::Scaling::RMS
@@ -112,4 +103,44 @@ SalpaParams SalpaConfigTab::params() const {
   pp.recovery_blank_ms = ui->blank->value();
   pp.recovery_zero_crossing = ui->detectzerocrossing->isChecked();
   return pp;
+}
+
+void SalpaConfigTab::configDetectThreshold() {
+  switch (ui->detectthresholdmode->currentIndex()) {
+  case 0: // RMS
+    ui->detectthreshold->setMinimum(5);
+    ui->detectthreshold->setMaximum(50);
+    ui->detectthreshold->setDecimals(1);
+    ui->detectthreshold->setSingleStep(1);
+    break;
+  case 1: // Percent range
+    ui->detectthreshold->setMinimum(10);
+    ui->detectthreshold->setMaximum(90);
+    ui->detectthreshold->setDecimals(0);
+    ui->detectthreshold->setSingleStep(10);
+    break;
+  case 2: // Absolute
+    ui->detectthreshold->setMinimum(100);
+    ui->detectthreshold->setMaximum(30000);
+    ui->detectthreshold->setDecimals(0);
+    ui->detectthreshold->setSingleStep(100);
+    break;
+  }
+}
+
+void SalpaConfigTab::configRecoveryThreshold() {
+  switch (ui->recoverythresholdmode->currentIndex()) {
+  case 0: // RMS
+    ui->recoverythreshold->setMinimum(1);
+    ui->recoverythreshold->setMaximum(5);
+    ui->recoverythreshold->setDecimals(1);
+    ui->recoverythreshold->setSingleStep(0.1);
+    break;
+  case 1: // Absolute
+    ui->recoverythreshold->setMinimum(100);
+    ui->recoverythreshold->setMaximum(30000);
+    ui->recoverythreshold->setDecimals(0);
+    ui->recoverythreshold->setSingleStep(100);
+    break;
+  }
 }

@@ -11,7 +11,6 @@
 #include "ColorTTLCtl.h"
 #include "Subset.h"
 #include "SignalBlocker.h"
-#include "DAW/SalpaConfigTab.h"
 
 #ifdef HAVE_IMEC
 #include "IMEC/NeuropixAPI.h"
@@ -48,7 +47,6 @@ ConfigCtl::ConfigCtl( QObject *parent )
         gateTab(0),
         trigTab(0),
         snsTab(0),
-        salpaTab(0),
         usingIM(false), usingOB(false),
         usingNI(false), validated(false)
 {
@@ -93,7 +91,6 @@ ConfigCtl::ConfigCtl( QObject *parent )
     gateTab = new Config_gatetab( cfgUI->gateTab );
     trigTab = new Config_trigtab( cfgUI->trigTab );
     snsTab  = new Config_snstab( cfgUI->snsTab );
-    salpaTab  = new SalpaConfigTab( cfgUI->salpaTab );
 
     cfgUI->tabsW->setCurrentIndex( 0 );
 }
@@ -101,11 +98,6 @@ ConfigCtl::ConfigCtl( QObject *parent )
 
 ConfigCtl::~ConfigCtl()
 {
-  if (salpaTab) {
-    delete salpaTab;
-    salpaTab = 0;
-  }
-  
     if( snsTab ) {
         delete snsTab;
         snsTab = 0;
@@ -647,9 +639,6 @@ void ConfigCtl::setSelectiveAccess( bool availIM, bool availNI )
         cfgUI->tabsW->setTabEnabled( Tab_Trig, true );
         cfgUI->tabsW->setTabEnabled( Tab_SNS, true );
     }
-
-    cfgUI->tabsW->setTabEnabled(Tab_Salpa, usingIM);
-    salpaTab->toGUI(acceptedParams, usingIM, usingNI);
 }
 
 
@@ -1317,7 +1306,6 @@ void ConfigCtl::tabChanged( int tab )
         case Tab_Gate:   s = "Gates Help"; break;
         case Tab_Trig:   s = "Trigs Help"; break;
         case Tab_SNS:    s = "Save Help"; break;
-        case Tab_Salpa:  s = "Salpa Help"; break;
         case Tab_END:    s = ""; break;
     }
     cfgUI->helpBut->setText( s );
@@ -1337,7 +1325,6 @@ void ConfigCtl::helpBut()
         case Tab_Gate:   s = "GateTab_Help"; break;
         case Tab_Trig:   s = "TrigTab_Help"; break;
         case Tab_SNS:    s = "SaveTab_Help"; break;
-        case Tab_Salpa:  s = "SalpaTab_Help"; break;
     case Tab_END: break;
     };
     showHelp( s );
@@ -1355,7 +1342,6 @@ void ConfigCtl::reset()
     imTab->reset( acceptedParams );
     setNoDialogAccess();
     syncTab->resetCalRunMode();
-    salpaTab->toGUI(acceptedParams, usingIM, usingNI);
 }
 
 
@@ -1454,7 +1440,6 @@ void ConfigCtl::paramsFromDialog(
     gateTab->fromGUI( q );
     trigTab->fromGUI( q );
     snsTab->fromGUI( q );
-    q.salpa = salpaTab->params();
 }
 
 

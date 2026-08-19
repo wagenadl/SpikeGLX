@@ -7,4 +7,5 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/SalpaConfigTab.cpp \
-    $$PWD/SalpaParams.cpp
+    $$PWD/SalpaParams.cpp \
+    $$PWD/LVE_salpa.cpp

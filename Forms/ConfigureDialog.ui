@@ -60,7 +60,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>8</number>
+      <number>7</number>
      </property>
      <property name="usesScrollButtons">
       <bool>true</bool>
@@ -103,11 +103,6 @@
      <widget class="QWidget" name="snsTab">
       <attribute name="title">
        <string>Save</string>
-      </attribute>
-     </widget>
-     <widget class="QWidget" name="salpaTab">
-      <attribute name="title">
-       <string>SALPA</string>
       </attribute>
      </widget>
     </widget>

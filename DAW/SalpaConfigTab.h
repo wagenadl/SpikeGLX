@@ -6,7 +6,6 @@
 
 #include <QWidget>
 
-#include "Src-params/DAQ.h"
 #include "SalpaParams.h"
 
 class SalpaConfigTab: public QObject {
@@ -14,16 +13,16 @@ class SalpaConfigTab: public QObject {
 public:
   SalpaConfigTab(QWidget *tab);
   virtual ~SalpaConfigTab();
-  void toGUI(DAQ::Params const &pp, bool usingIM, bool usingNI);
+  void toGUI(SalpaParams const &);
   SalpaParams params() const;
+signals:
+  void changed();
 private slots:
   void autoEnable();
-  void deviceChange();
+  void configDetectThreshold();
+  void configRecoveryThreshold();
 private:
   class Ui_SalpaConfigTab *ui;
-  bool usingIM;
-  bool usingNI;
-  QMap<QString, QStringList> linesbydev;
 };
 
 #endif

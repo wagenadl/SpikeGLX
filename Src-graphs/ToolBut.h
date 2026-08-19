@@ -190,6 +190,25 @@ private:
     void updateButtonValue()    {m_valueWidget->setText( m_value );}
 };
 
+// DAW[
+class LVE_salpa : public LVEditor {
+  Q_OBJECT
+public:
+  class SalpaConfigTab *m_salpaBox;
+public:
+  LVE_salpa(QWidget *parent);
+  virtual void setValue(const QString &val) override;
+  void setParams(class SalpaParams const &);
+  void getParams(class SalpaParams &) const;
+public slots:
+  virtual void setFocus() override;
+private slots:
+  void report();
+signals:
+  void changed(QString const &);
+};
+// ]DAW
+
 #endif  // TOOLBUT_H
 
 

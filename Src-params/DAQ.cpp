@@ -540,7 +540,6 @@ void Params::loadSettings( bool remote )
 // ----
 
     im.loadSettings( settings );
-    salpa.loadSettings(settings);
 }
 
 
@@ -648,8 +647,6 @@ void Params::saveSettings( bool remote ) const
 // ----
 
     im.saveSettings( settings );
-
-    salpa.saveSettings(settings);
 }
 
 

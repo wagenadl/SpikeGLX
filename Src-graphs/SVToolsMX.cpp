@@ -194,6 +194,13 @@ void SVToolsMX::init()
         addWidget( LV );
 
         // DAW[
+        LVE_salpa *LVS = new LVE_salpa(this);
+        LV = new LVBut("AS", "Off",
+                       LVBUT_STYLE, LVLBL_STYLE, LVVAL_STYLE,
+                       LVS, this);
+        addWidget(LV);
+        connect(LVS, &LVE_salpa::changed,
+                LV, &LVBut::setValue);
         // DAW-TODO: Add Salpa config here
         // ]DAW
     }

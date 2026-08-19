@@ -19,8 +19,6 @@ struct SalpaParams {
   Scaling detect_scaling = Scaling::PercentRange;
   float lookahead_ms = 0.20;
   bool digitaltrigger = false;
-  QString trigger_device;
-  QString trigger_line;
   float recovery_threshold = 3.0;
   Scaling recovery_scaling = Scaling::RMS;
   float recovery_window_ms = 0.20;
