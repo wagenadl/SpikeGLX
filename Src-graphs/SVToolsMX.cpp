@@ -193,7 +193,9 @@ void SVToolsMX::init()
                 LVB, this );
         addWidget( LV );
 
+        // DAW[
         // DAW-TODO: Add Salpa config here
+        // ]DAW
     }
 
 // -------------
@@ -233,15 +235,17 @@ void SVToolsMX::init()
             LVC, this );
     addWidget( LV );
 
-    // DAW-TODO: Add sweep triggering here
+    // DAW[
     // -------------
     // Sweep trigger
     // -------------
-    LVB = new LVE_cb("Sweep triggering\n"
-                     " - Off\t= continuous display\n"
-                     " - On\t= trigger on IMEC digital input\n"
-                     " - D0..Dx\t= trigger on NI digital input",
+    LVB = new LVE_cb(QString("Sweep triggering\n"
+                             " - Off\t= continuous display\n")
+                     + (gr->isImec()
+                        ? QString(" - On\t= trigger on IMEC digital input\n")
+                        : QString(" - D0..Dx\t= trigger on NI digital input")),
                      this);
+      
     LVB->m_comboBox->addItem("Off");
     if (gr->isImec()) {
       LVB->m_comboBox->addItem("On");
@@ -256,6 +260,7 @@ void SVToolsMX::init()
                    LVBUT_STYLE, LVLBL_STYLE, LVVAL_STYLE,
                    LVB, this);
     addWidget(LV);
+    // ]DAW
 }
 
 
