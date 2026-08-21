@@ -124,7 +124,6 @@ void LiveSalpa::setParams(SalpaParams const &pp) {
 
 void LiveSalpa::process(qint16 *data, int nNu, int nC, int ntpts,
                         QVector<int> const &ic2iy, double srate) {
-  qDebug() << "salpa process" << nNu << nC << ntpts << srate;
   QMutexLocker lock(&d->mutex);
   if (!d->pp.enable)
     return;
@@ -153,8 +152,6 @@ void LiveSalpa::process(qint16 *data, int nNu, int nC, int ntpts,
       d->noise[ic]->train(data + ic, ntpts, nC);
       if (d->noise[ic]->chunks() >= NTRAININGCHUNKS) {
         d->noise[ic]->makeready();
-        if (ic==0)
-          qDebug() << "noise " << ic << d->noise[ic]->mean() << d->noise[ic]->std();
         if (d->fitters.contains(ic))
           d->updatefitter(ic);
       }
@@ -163,7 +160,7 @@ void LiveSalpa::process(qint16 *data, int nNu, int nC, int ntpts,
 
   std::uint32_t start = d->tfill;
   std::uint32_t end = start + ntpts;
-
+  timeref_t limit = end >= lag ? end - lag : 0;
   if (d->pp.digitaltrigger && !d->forced && nC > nNu) {
     // look for new forcing event
     qint16 *digi = data + nNu;
@@ -177,7 +174,8 @@ void LiveSalpa::process(qint16 *data, int nNu, int nC, int ntpts,
       digi += nC;
     }
   }
-  
+  bool forcenow = d->forced && d->tforcestart < limit;
+  bool partialforce = d->tforceend > limit;
   for (int ic: channels) {
     if (d->inbuf.contains(ic))
       d->inbuf[ic]->grow(minlog);
@@ -195,15 +193,12 @@ void LiveSalpa::process(qint16 *data, int nNu, int nC, int ntpts,
       d->makefitter(ic, srate);
 
     if (d->fitters.contains(ic)) {
-      timeref_t limit = end >= lag ? end - lag : 0u;
-      if (d->forced && d->tforcestart < limit) {
-        timeref_t end = d->tforceend;
-        if (end > limit) {
-          d->fitters[ic]->forcepeg(start, limit);
+      if (forcenow) {
+        if (partialforce) {
+          d->fitters[ic]->forcepeg(d->tforcestart, limit);
           // forced peg continues into next iteration
         } else {
-          d->fitters[ic]->forcepeg(start, end);
-          d->forced = false;
+          d->fitters[ic]->forcepeg(start, d->tforceend);
           d->fitters[ic]->process(limit);
         }
       } else {
@@ -214,6 +209,8 @@ void LiveSalpa::process(qint16 *data, int nNu, int nC, int ntpts,
       d->inbuf[ic]->grab(data + ic, ntpts, nC, start - lag);
     }
   }
+  if (forcenow && !partialforce)
+    d->forced = false;
   d->tfill = end;
 
   // remove unused

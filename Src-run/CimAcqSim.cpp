@@ -455,6 +455,8 @@ static void genNPts(
         qint64 pha = (cumSamp + s) & 2047;
         if (pha < 60)
           V += .05*A*(pha - 30);
+        else
+          V += 0.005*A*((pha&15) - 7);
 
         for( int c = 0; c < nNeu; ++c ) {
 
