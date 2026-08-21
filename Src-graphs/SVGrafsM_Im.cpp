@@ -14,6 +14,9 @@
 #include "SVShankCtl_Im.h"
 #include "Biquad.h"
 
+#include "SalpaParams.h" // [DAW]
+#include "LiveSalpa.h"   // [DAW]
+
 #include <QAction>
 #include <QComboBox>
 #include <QSettings>
@@ -80,6 +83,8 @@ SVGrafsM_Im::SVGrafsM_Im(
     car.setAuto( p.im.prbj[ip].roTbl );
     car.setChans( p.stream_nChans( jsIM, ip ), p.im.prbj[ip].imCumTypCnt[CimCfg::imSumNeural] );
     car.setSU( &p.im.prbj[ip].sns.shankMap );
+
+    salpa = new LiveSalpa(this); // [DAW]
 }
 
 /* ---------------------------------------------------------------- */
@@ -238,6 +243,11 @@ void SVGrafsM_Im::putSamps( vec_i16 &data, quint64 headCt )
             ;
     }
 
+    // DAW[
+    // -----------------------
+    // Handle SALPA
+    // -----------------------
+    salpa->process(&data[0], nNu, nC, ntpts, ic2iy, mySampRate());
 
     // -----------------------
     // Handle sweep triggering
@@ -284,6 +294,7 @@ void SVGrafsM_Im::putSamps( vec_i16 &data, quint64 headCt )
         return;
       }
     }
+    // ]DAW
 
 // ---------------------
 // Append data to graphs
@@ -1126,6 +1137,16 @@ void SVGrafsM_Im::setSweepTriggering(int idx) {
   } else {
     sweepOnTrigger = false;
   }
+}
+
+
+void SVGrafsM_Im::setSalpaParams(SalpaParams const &ppsalpa) {
+  qDebug() << "SVGraphsM_Im setsalpaparams" << ppsalpa.enable;
+  salpa->setParams(ppsalpa);
+}
+
+void SVGrafsM_Im::resetSalpaTraining() {
+  salpa->resetTraining();
 }
 
 // ]DAW

@@ -13,15 +13,16 @@ struct SalpaParams {
     RMS,
   };
   bool enable = false;
-  float window_ms = 3.0;
+  float window_ms = 6.0;
   bool autodetect = true;
   float detect_threshold = 80;
   Scaling detect_scaling = Scaling::PercentRange;
   float lookahead_ms = 0.20;
   bool digitaltrigger = false;
+  float forcepeg_ms;
   float recovery_threshold = 3.0;
   Scaling recovery_scaling = Scaling::RMS;
-  float recovery_window_ms = 0.20;
+  float recovery_window_ms = 0.80;
   float recovery_blank_ms = 0.40;
   bool recovery_zero_crossing = true;
 public:

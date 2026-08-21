@@ -21,6 +21,8 @@ private:
             *spike4Action,
             *stdbyAction;
 
+  class LiveSalpa *salpa = 0;
+
 public:
     SVGrafsM_Im(
         GraphsWindow        *gw,
@@ -45,7 +47,9 @@ public:
 public slots:
     virtual void bandSelChanged( int sel );
     virtual void sAveSelChanged( int sel );
-    virtual void setSweepTriggering(int idx) override;
+    virtual void setSweepTriggering(int idx) override; // [DAW]
+    virtual void setSalpaParams(class SalpaParams const &) override; // [DAW]
+    virtual void resetSalpaTraining() override; // [DAW]
 private slots:
     virtual void myClickGraph( double x, double y, int iy );
     virtual void myRClickGraph( double x, double y, int iy );

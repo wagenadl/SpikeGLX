@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>672</width>
-    <height>208</height>
+    <width>682</width>
+    <height>212</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,24 +39,17 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QCheckBox" name="autodetect">
-        <property name="text">
-         <string>Auto detect</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="autodetectbox">
+       <widget class="QGroupBox" name="autodetect">
         <property name="toolTip">
-         <string>Automatically detect artifacts from the signal itself</string>
+         <string>Automatically detect artifacts from the signal itself.</string>
         </property>
         <property name="title">
          <string>Automatic detection</string>
         </property>
         <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
          <bool>false</bool>
         </property>
         <layout class="QGridLayout" name="gridLayout">
@@ -77,7 +70,7 @@
          <item row="0" column="3">
           <widget class="QComboBox" name="detectthresholdmode">
            <property name="toolTip">
-            <string>Units for threshold: RMS is estimated noise; 100% means max ecursion of amplifier; µV are absolute</string>
+            <string>Units for threshold: RMS is estimated noise; 100% means max ecursion of amplifier; µV are absolute.</string>
            </property>
            <property name="currentIndex">
             <number>1</number>
@@ -102,10 +95,10 @@
          <item row="0" column="2">
           <widget class="QDoubleSpinBox" name="detectthreshold">
            <property name="toolTip">
-            <string>Threshold for detecting an artifact</string>
+            <string>Threshold for detecting an artifact.</string>
            </property>
            <property name="decimals">
-            <number>0</number>
+            <number>1</number>
            </property>
            <property name="minimum">
             <double>10.000000000000000</double>
@@ -121,7 +114,7 @@
          <item row="1" column="2" colspan="2">
           <widget class="QDoubleSpinBox" name="lookahead">
            <property name="toolTip">
-            <string>An srtifact is declared this much time before the detected threshold crossing</string>
+            <string>An srtifact is declared this much time before the detected threshold crossing.</string>
            </property>
            <property name="suffix">
             <string> ms</string>
@@ -141,13 +134,44 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="digitaltrigger">
-        <property name="text">
-         <string>Digital trigger</string>
+       <widget class="QGroupBox" name="digitaltrigger">
+        <property name="title">
+         <string>Digital triggering</string>
         </property>
-        <property name="checked">
+        <property name="checkable">
          <bool>true</bool>
         </property>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Forced duration</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QDoubleSpinBox" name="forcepeg">
+           <property name="toolTip">
+            <string>When a digital trigger is detected, the signal is force-blanked for this amount of time, after which normal recovery rules apply.</string>
+           </property>
+           <property name="suffix">
+            <string> ms</string>
+           </property>
+           <property name="minimum">
+            <double>0.100000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>50.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.200000000000000</double>
+           </property>
+           <property name="value">
+            <double>5.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
@@ -191,7 +215,7 @@
          <item row="6" column="1" colspan="2">
           <widget class="QDoubleSpinBox" name="blank">
            <property name="toolTip">
-            <string>After the declared recovery, the signal is still zeroed for this much additional time</string>
+            <string>After the declared recovery, the signal is still zeroed for this much additional time.</string>
            </property>
            <property name="suffix">
             <string> ms</string>
@@ -210,7 +234,7 @@
          <item row="4" column="1">
           <widget class="QDoubleSpinBox" name="recoverythreshold">
            <property name="toolTip">
-            <string>Threshold for declaring that an artifactt is over (or at lest, well enough suppressed)</string>
+            <string>Threshold for declaring that an artifact is over (or at lest, well enough suppressed).</string>
            </property>
            <property name="decimals">
             <number>1</number>
@@ -246,7 +270,7 @@
          <item row="4" column="2">
           <widget class="QComboBox" name="recoverythresholdmode">
            <property name="toolTip">
-            <string>Units for threshold. RMS is estimated noise; µV is absolute</string>
+            <string>Units for threshold. RMS is estimated noise; µV is absolute.</string>
            </property>
            <item>
             <property name="text">
@@ -263,7 +287,7 @@
          <item row="5" column="1" colspan="2">
           <widget class="QDoubleSpinBox" name="estimator">
            <property name="toolTip">
-            <string>Window length for estimating recovery</string>
+            <string>Window length for estimating recovery.</string>
            </property>
            <property name="suffix">
             <string> ms</string>
@@ -330,7 +354,7 @@
          <item row="4" column="1">
           <widget class="QDoubleSpinBox" name="window">
            <property name="toolTip">
-            <string>This is the full length of the fit window</string>
+            <string>This is the full length of the fit window (i.e., twice the τ from the paper).</string>
            </property>
            <property name="suffix">
             <string> ms</string>
@@ -367,6 +391,13 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QToolButton" name="reset">
+        <property name="text">
+         <string>Re-assess noise</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

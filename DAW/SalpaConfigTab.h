@@ -17,6 +17,7 @@ public:
   SalpaParams params() const;
 signals:
   void changed();
+  void resetPressed();
 private slots:
   void autoEnable();
   void configDetectThreshold();

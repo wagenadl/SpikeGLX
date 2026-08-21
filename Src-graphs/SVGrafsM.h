@@ -177,7 +177,9 @@ public slots:
     void binMaxChkClicked( bool checked );
     virtual void bandSelChanged( int /*sel*/ )  {}
     virtual void sAveSelChanged( int /*sel*/ )  {}
-    virtual void setSweepTriggering(int /*idx*/) {}
+    virtual void setSweepTriggering(int /*idx*/) {} // [DAW]
+    virtual void setSalpaParams(class SalpaParams const &) {} // [DAW]
+    virtual void resetSalpaTraining() {} // [DAW]
     // Right-click
     void refresh();
     void colorTTL();

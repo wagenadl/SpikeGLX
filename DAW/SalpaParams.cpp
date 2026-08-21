@@ -18,6 +18,7 @@ void SalpaParams::loadSettings(QSettings &settings) {
     : Scaling::Absolute;
   lookahead_ms = settings.value("lookahead_ms", 0.20).toFloat();
   digitaltrigger = settings.value("digitaltrigger", false).toBool();
+  forcepeg_ms = settings.value("forcepeg_ms", 5.0).toFloat();
   recovery_threshold = settings.value("recovery_threshold", 3.0).toFloat();
   idx = settings.value("recovery_scaling", "rms").toString();
   recovery_scaling = idx == "rms" ? Scaling::RMS
@@ -40,6 +41,7 @@ void SalpaParams::saveSettings(QSettings &settings) const {
                     : "abs");
   settings.setValue("lookahead_ms", QString::number(lookahead_ms, 'f', 2));
   settings.setValue("digitaltrigger", digitaltrigger);
+  settings.setValue("forcepeg_ms", QString::number(forcepeg_ms, 'f', 2));
   settings.setValue("recovery_threshold", QString::number(recovery_threshold, 'f', 2));
   settings.setValue("recovery_scaling",
                     recovery_scaling == Scaling::RMS ? "rms"

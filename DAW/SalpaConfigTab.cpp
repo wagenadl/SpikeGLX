@@ -10,9 +10,9 @@ SalpaConfigTab::SalpaConfigTab(QWidget *tab): QObject(0) {
   autoEnable();
   connect(ui->enable, &QCheckBox::toggled,
           this, &SalpaConfigTab::autoEnable);
-  connect(ui->digitaltrigger, &QCheckBox::toggled,
+  connect(ui->digitaltrigger, &QGroupBox::toggled,
           this, &SalpaConfigTab::autoEnable);
-  connect(ui->autodetect, &QCheckBox::toggled,
+  connect(ui->autodetect, &QGroupBox::toggled,
           this, &SalpaConfigTab::autoEnable);
 
   connect(ui->detectthresholdmode, &QComboBox::currentIndexChanged,
@@ -23,9 +23,11 @@ SalpaConfigTab::SalpaConfigTab(QWidget *tab): QObject(0) {
   // externally report changes
   connect(ui->enable, &QCheckBox::toggled,
           this, &SalpaConfigTab::changed);
-  connect(ui->digitaltrigger, &QCheckBox::toggled,
+  connect(ui->digitaltrigger, &QGroupBox::toggled,
           this, &SalpaConfigTab::changed);
-  connect(ui->autodetect, &QCheckBox::toggled,
+  connect(ui->autodetect, &QGroupBox::toggled,
+          this, &SalpaConfigTab::changed);
+  connect(ui->forcepeg, &QDoubleSpinBox::valueChanged,
           this, &SalpaConfigTab::changed);
   connect(ui->window, &QDoubleSpinBox::valueChanged,
           this, &SalpaConfigTab::changed);
@@ -45,6 +47,9 @@ SalpaConfigTab::SalpaConfigTab(QWidget *tab): QObject(0) {
           this, &SalpaConfigTab::changed);
   connect(ui->detectzerocrossing, &QCheckBox::toggled,
           this, &SalpaConfigTab::changed);
+
+  connect(ui->reset, &QToolButton::clicked,
+          this, &SalpaConfigTab::resetPressed);
   
 }
 
@@ -72,6 +77,7 @@ void SalpaConfigTab::toGUI(SalpaParams const &ppsalpa) {
            : 2);
   ui->lookahead->setValue(ppsalpa.lookahead_ms);
   ui->digitaltrigger->setChecked(ppsalpa.digitaltrigger);
+  ui->forcepeg->setValue(ppsalpa.forcepeg_ms);
   ui->recoverythreshold->setValue(ppsalpa.recovery_threshold);
   ui->recoverythresholdmode->setCurrentIndex(
            ppsalpa.recovery_scaling == SalpaParams::Scaling::RMS ? 0
@@ -95,6 +101,7 @@ SalpaParams SalpaConfigTab::params() const {
     : SalpaParams::Scaling::Absolute;
   pp.lookahead_ms = ui->lookahead->value();
   pp.digitaltrigger = ui->digitaltrigger->isChecked();
+  pp.forcepeg_ms = ui->forcepeg->value();
   pp.recovery_threshold = ui->recoverythreshold->value();
   idx = ui->recoverythresholdmode->currentIndex();
   pp.recovery_scaling = idx == 0 ? SalpaParams::Scaling::RMS

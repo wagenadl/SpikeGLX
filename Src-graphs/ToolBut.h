@@ -206,6 +206,7 @@ private slots:
   void report();
 signals:
   void changed(QString const &);
+  void reset();
 };
 // ]DAW
 

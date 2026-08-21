@@ -13,10 +13,13 @@ LVE_salpa::LVE_salpa(QWidget *parent):
   layout()->addWidget(container);
   connect(m_salpaBox, &SalpaConfigTab::changed,
           this, &LVE_salpa::report);
+  connect(m_salpaBox, &SalpaConfigTab::resetPressed,
+          this, &LVE_salpa::reset);
+  
 }
 
-void LVE_salpa::setValue(const QString &val) {
-  qDebug() << "LVE_salpa set value" << val;
+void LVE_salpa::setValue(const QString &) {
+  // qDebug() << "LVE_salpa set value" << val;
 }
 
 void LVE_salpa::setParams(class SalpaParams const &ppsalpa) {
@@ -25,17 +28,14 @@ void LVE_salpa::setParams(class SalpaParams const &ppsalpa) {
 }
 
 void LVE_salpa::getParams(class SalpaParams &ppsalpa) const {
-  qDebug() << "LVE_salpa get params";
   SalpaParams pp = m_salpaBox->params();
   ppsalpa = pp;
 }
 
 void LVE_salpa::setFocus() {
-  qDebug() << "LVE_salpa set focus";
 }
 
 void LVE_salpa::report() {
-  qDebug() << "LVE_salpa report";
   SalpaParams pp = m_salpaBox->params();
   emit changed(pp.enable ? "On": "Off");
 }

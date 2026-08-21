@@ -452,6 +452,9 @@ static void genNPts(
     for( int s = 0; s < nPts; ++s ) {
 
         double  V = A * sin( f * (cumSamp + s) );
+        qint64 pha = (cumSamp + s) & 2047;
+        if (pha < 60)
+          V += .05*A*(pha - 30);
 
         for( int c = 0; c < nNeu; ++c ) {
 

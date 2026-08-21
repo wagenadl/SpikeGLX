@@ -9,6 +9,8 @@
 #include "SignalBlocker.h"
 #include "ToolBut.h"
 
+#include "SalpaParams.h" // [DAW]
+
 #include <QApplication>
 #include <QPushButton>
 #include <QPainter>
@@ -201,7 +203,14 @@ void SVToolsMX::init()
         addWidget(LV);
         connect(LVS, &LVE_salpa::changed,
                 LV, &LVBut::setValue);
-        // DAW-TODO: Add Salpa config here
+        connect(LVS, &LVE_salpa::changed,
+                this, [LVS, this]() {
+                  SalpaParams pp;
+                  LVS->getParams(pp);
+                  gr->setSalpaParams(pp); }, Qt::QueuedConnection);
+        connect(LVS, &LVE_salpa::reset,
+                this, [LVS, this]() {
+                  gr->resetSalpaTraining(); }, Qt::QueuedConnection);
         // ]DAW
     }
 
